@@ -2,6 +2,20 @@ require 'open3'
 require 'pathname'
 
 class Problem < Struct.new(:name)
+  ORDER = [
+    'rock_paper_scissors', # boolean logic
+    'count_words', # String#split
+    'hi_birthday', # String#split, interpolation
+    'hi_birthday2', # String#split, interpolation, String#to_i
+    'count_vowels', # Array#count
+    'reverse_string', # loops, arrays
+    'check_duplicates', # Array#count, loop
+    'pig_latin', # boolean logic, string slicing
+    'is_palindrome',
+    'num_digits', # Number#to_s
+    'is_divisible', # modulo
+    'is_prime', # modulo, functions
+  ]
   PROBLEM_SPECS_PATH = File.join(APP_PATH, 'specs')
   PROBLEMS_PATH = File.join(APP_PATH, 'problems')
 
@@ -10,6 +24,11 @@ class Problem < Struct.new(:name)
       name = path.split('/')[-1]
       self.new(name)
     end
+  end
+  def no
+    i = ORDER.index(name)
+    return 0 unless i
+    i + 1
   end
   def specs_folder_path
     File.join(PROBLEM_SPECS_PATH, name)
@@ -23,12 +42,15 @@ class Problem < Struct.new(:name)
   def gen_input_path
     File.join(specs_folder_path, 'inputs.rb')
   end
-  def file_path
-    File.join(PROBLEMS_PATH, name + '.rb')
+  def problem_path
+    File.join(PROBLEMS_PATH, "#{no}_#{name}.rb")
   end
+  # def file_path
+  #   File.join(PROBLEMS_PATH, name + '.rb')
+  # end
   def content
-    return nil unless File.exist?(file_path)
-    @content ||= File.read(file_path)
+    return nil unless File.exist?(problem_path)
+    @content ||= File.read(problem_path)
   end
 
   def input_content
@@ -49,12 +71,12 @@ class Problem < Struct.new(:name)
     our_stdout.strip
   end
   def their_answer(line)
-    their_stdout, their_status = LIGHTLY.get(their_hash + line) { Open3.capture2("ruby #{file_path}", stdin_data: line) }
+    their_stdout, their_status = LIGHTLY.get(their_hash + line) { Open3.capture2("ruby #{problem_path}", stdin_data: line) }
     their_stdout.strip
   end
 
   def their_hash
-    @their_hash ||= Digest::MD5.file(file_path).hexdigest
+    @their_hash ||= Digest::MD5.file(problem_path).hexdigest
   end
   def our_hash
     @our_hash ||= Digest::MD5.file(specs_file_path).hexdigest

@@ -32,9 +32,6 @@ class ProblemCopier < Problem
     end
     ret_lines.join("\n") + "\n" * 3
   end
-  def problem_path
-    File.join(APP_PATH, 'problems', name + '.rb')
-  end
   def identical?
     File.read(problem_path) == problem_file_contents
   end
@@ -62,4 +59,10 @@ args = ARGV
 cmd_name = args[0]
 problem_name = args[1]
 
-ProblemCopier.new(problem_name).send(cmd_name)
+if problem_name == 'all'
+  FileUtils.rm_rf(Problem::PROBLEMS_PATH)
+  FileUtils.mkdir_p(Problem::PROBLEMS_PATH)
+  ProblemCopier.all.each{ |problem| problem.send(cmd_name) }
+else
+  ProblemCopier.new(problem_name).send(cmd_name)
+end

@@ -3,8 +3,5 @@ word = gets.strip
 # elday -> 2
 # ben -> 1
 # covidsucks -> 3
-sum = 0
-'aeiou'.split('').each do |vowel|
-  sum += word.count(vowel)
-end
-puts sum
+
+
