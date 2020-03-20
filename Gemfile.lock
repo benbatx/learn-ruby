@@ -1,0 +1,17 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    byebug (11.1.1)
+    lightly (0.3.2)
+    slop (4.8.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  byebug
+  lightly
+  slop
+
+BUNDLED WITH
+   2.1.2
