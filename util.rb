@@ -61,7 +61,14 @@ problem_name = args[1]
 if problem_name == 'all'
   FileUtils.rm_rf(Problem::PROBLEMS_PATH)
   FileUtils.mkdir_p(Problem::PROBLEMS_PATH)
-  ProblemCopier.all.each{ |problem| problem.send(cmd_name) }
+  ProblemCopier.all.each do |problem|
+    unless problem.no
+      puts "#{problem.name} missing order"
+      next
+    end
+    problem.send(cmd_name)
+  end
 else
   ProblemCopier.new(problem_name).send(cmd_name)
+  `open #{ProblemCopier.new(problem_name).problem_path}`
 end

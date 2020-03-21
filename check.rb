@@ -20,6 +20,7 @@ require_relative 'lib/problem.rb'
 class ProblemChecker < Problem
 
   def check_solution
+    no_passed = 0
     input_content.split("\n").each do |line|
       # puts "checking #{line}"
       # their_stdout, their_status = LIGHTLY.get(their_hash + line) { Open3.capture2("ruby #{file_path}", stdin_data: line) }
@@ -27,17 +28,20 @@ class ProblemChecker < Problem
       expected = our_answer(line)
       if actual != expected
         # puts "echo #{line} | ruby problems/#{name}.rb"
-        puts "oops?"
+        puts "#{no_passed} tests passed!"
+
         puts "ruby #{problem_rel_path}"
         puts "input    : #{line}"#line.inspect
-        puts "output   : #{actual}"
         puts "expected : #{expected}"
+        puts "but got  : #{actual}"
         # puts "#{line} shouldn't be #{their_stdout}"
         return
       end
+      no_passed += 1
       # next if their_answer == our_answer
       # puts "Wrong answer for #{line.inspect}"
     end
+    puts "#{no_passed} tests passed!"
     puts "everything looks good! 🌈☀️"
   end
 end

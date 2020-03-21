@@ -3,18 +3,23 @@ require 'pathname'
 
 class Problem < Struct.new(:name)
   ORDER = [
-    'rock_paper_scissors', # boolean logic
+    'say_name_back', # interpolation
+    'human_yrs', # String#to_i, math
+    'say_last_name', # interpolation Array#[]
+    'rock_paper_scissors', # Bool== &&
+    'combine_colors', # Array#[] Bool= &&
     'count_words', # String#split
     'hi_birthday', # String#split, interpolation
     'hi_birthday2', # String#split, interpolation, String#to_i
-    'count_vowels', # Array#count
+    'count_vowels', # Array#count, Bool==
     'square_num', # loops, accum
-    'reverse_string', # loops, Array#push
-    'check_duplicates', # Array#count, loop
+    'reverse_string', # loops, Array#[], Array#push
+    'check_duplicates', # Bool==, Array#count, loop
     'pig_latin', # boolean logic, string slicing
     'is_palindrome',
     'num_digits', # Number#to_s
     'is_divisible', # modulo
+    'even_digits', # modulo, String#split
     'is_prime', # modulo, functions
   ]
   PROBLEM_SPECS_PATH = File.join(APP_PATH, 'specs')
@@ -28,14 +33,17 @@ class Problem < Struct.new(:name)
   end
   def no
     i = ORDER.index(name)
-    return 0 unless i
+    return nil unless i
     i + 1
   end
   def specs_folder_path
     File.join(PROBLEM_SPECS_PATH, name)
   end
   def specs_file_path
-    File.join(specs_folder_path, name + '.rb')
+    paths = []
+    paths << File.join(specs_folder_path, name + '.rb')
+    paths << File.join(specs_folder_path, 'problem.rb')
+    paths.find{|path| File.exist?(path)} || paths[0]
   end
   def static_input_path
     File.join(specs_folder_path, 'inputs.txt')

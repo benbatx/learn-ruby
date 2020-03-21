@@ -1,5 +1,5 @@
 number = gets.to_i
-# output true if number is prime, otherwise false
+# output true if natural number num is prime, otherwise false
 # 2 -> true
 # 3 -> true
 # 4 -> false
