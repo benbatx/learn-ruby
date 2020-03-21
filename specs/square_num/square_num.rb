@@ -1,3 +1,3 @@
-num = gets.to_i
+num_str = gets.strip
 # output the square of the natural number num
-puts num ** 2
+puts num_str.to_i ** 2

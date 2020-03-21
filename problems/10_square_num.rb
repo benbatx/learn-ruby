@@ -1,4 +1,4 @@
-num = gets.to_i
+num_str = gets.strip
 # output the square of the natural number num
 # 2 -> 4
 # 7 -> 49
