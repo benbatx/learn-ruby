@@ -37,8 +37,7 @@ class ProblemCopier < Problem
   end
   def copy
     if File.exist?(problem_path) && !identical?
-      rel_path = Pathname.new(problem_path).relative_path_from(Pathname.new(APP_PATH))
-      puts "#{rel_path} already exists, overwrite? (y/n)"
+      puts "#{problem_rel_path} already exists, overwrite? (y/n)"
       return unless STDIN.gets.strip == 'y'
     end
     # gen_input

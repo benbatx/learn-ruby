@@ -8,7 +8,8 @@ class Problem < Struct.new(:name)
     'hi_birthday', # String#split, interpolation
     'hi_birthday2', # String#split, interpolation, String#to_i
     'count_vowels', # Array#count
-    'reverse_string', # loops, arrays
+    'square_num', # loops, accum
+    'reverse_string', # loops, Array#push
     'check_duplicates', # Array#count, loop
     'pig_latin', # boolean logic, string slicing
     'is_palindrome',
@@ -44,6 +45,9 @@ class Problem < Struct.new(:name)
   end
   def problem_path
     File.join(PROBLEMS_PATH, "#{no}_#{name}.rb")
+  end
+  def problem_rel_path
+    Pathname.new(problem_path).relative_path_from(Pathname.new(APP_PATH))
   end
   # def file_path
   #   File.join(PROBLEMS_PATH, name + '.rb')

@@ -4,12 +4,16 @@
 #   puts problem_name
 # end
 
-problem_name = ARGV[0]
+problem_name = ARGV[0].dup
 
 unless problem_name
   puts "usage: "
   puts "ruby #{File.basename(__FILE__)}.rb <problem_name>"
 end
+
+problem_name.sub!('problems/', '')
+problem_name.sub!(/\A\d+_/, '')
+problem_name.sub!(/\.rb\Z/, '')
 
 require_relative 'init.rb'
 require_relative 'lib/problem.rb'
@@ -24,7 +28,7 @@ class ProblemChecker < Problem
       if actual != expected
         # puts "echo #{line} | ruby problems/#{name}.rb"
         puts "oops?"
-        puts "ruby problems/#{name}.rb"
+        puts "ruby #{problem_rel_path}"
         puts "input    : #{line}"#line.inspect
         puts "output   : #{actual}"
         puts "expected : #{expected}"
