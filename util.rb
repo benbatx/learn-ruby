@@ -28,7 +28,14 @@ class ProblemCopier < Problem
     _prompt_lines = prompt_lines
     ret_lines += _prompt_lines
     unless _prompt_lines.any?{|line| line.include?(' -> ')}
-      ret_lines += input_content.split("\n")[0..no_examples - 1].map{|line| "# #{line} -> #{our_answer(line)}"}
+      ret_lines += ['']
+      ret_lines += input_content.split("\n")[0..no_examples - 1].map do |line|
+        ours_lines = our_answer(line).split("\n")
+        ours_multiline = (ours_lines.length > 1)
+        ret = "# #{line} -> #{ours_lines.join("\n# ")}"
+        ret += "\n" if ours_multiline
+        ret
+      end
     end
     ret_lines.join("\n") + "\n" * 3
   end
