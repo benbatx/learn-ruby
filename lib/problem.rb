@@ -12,6 +12,7 @@ class Problem < Struct.new(:name)
     'hi_birthday', # String#split, interpolation
     'hi_birthday2', # String#split, interpolation, String#to_i
     'count_vowels', # Array#each, Array#count, Bool==
+    'greet_thrice',
     'greet_each_name', # Array#each
     'square_num', # loops, accum
     'reverse_string', # loops, Array#[], Array#push
