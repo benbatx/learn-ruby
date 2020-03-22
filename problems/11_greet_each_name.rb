@@ -1,7 +1,6 @@
 names_str = gets.strip
 # names_str is a string with multiple names.
 # say hi & goodbye to each name :)
-# hint: 5.times { |num| puts "its time no#{num}" }
 
 # rain wind snow thunder -> hi rain, bye rain
 # hi wind, bye wind
