@@ -1,5 +1,6 @@
 move = gets().strip() #functions - always give back a string
 # output the move that wins the rock paper scissors game
+
 # rock -> paper
 # paper -> scissors
 # scissors -> rock
