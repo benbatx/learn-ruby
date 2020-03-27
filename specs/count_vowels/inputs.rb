@@ -1,4 +1,4 @@
-require_relative File.join('..', '..', 'init.rb')
+require_relative '../../lib/common.rb'
 require File.join(APP_PATH, 'lib/data.rb')
 
 puts Data.words('alice.txt')

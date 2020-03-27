@@ -1,4 +1,4 @@
-require_relative 'init.rb'
+require_relative 'lib/common.rb'
 require_relative 'lib/problem.rb'
 
 class ProblemCopier < Problem

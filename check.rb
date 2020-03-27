@@ -11,11 +11,7 @@ unless problem_name
   puts "ruby #{File.basename(__FILE__)}.rb <problem_name>"
 end
 
-problem_name.sub!('problems/', '')
-problem_name.sub!(/\A\d+_/, '')
-problem_name.sub!(/\.rb\Z/, '')
-
-require_relative 'init.rb'
+require_relative 'lib/common.rb'
 require_relative 'lib/problem.rb'
 class ProblemChecker < Problem
 

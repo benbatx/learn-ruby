@@ -26,6 +26,14 @@ class Problem < Struct.new(:name)
   PROBLEM_SPECS_PATH = File.join(APP_PATH, 'specs')
   PROBLEMS_PATH = File.join(APP_PATH, 'problems')
 
+  def initialize(_name)
+    name = _name.dup
+    name.sub!('problems/', '')
+    name.sub!(/\A\d+_/, '')
+    name.sub!(/\.rb\Z/, '')
+    super(name)
+  end
+
   def self.all
     Dir[File.join(PROBLEM_SPECS_PATH, '*')].map do |path|
       name = path.split('/')[-1]
@@ -68,7 +76,7 @@ class Problem < Struct.new(:name)
 
   def input_content
     unless File.exist?(static_input_path) && File.read(static_input_path).strip != ''
-      raise "expected generator #{gen_input_path}" unless File.exist?(gen_input_path)
+      raise "expected generator #{gen_input_path.inspect}" unless File.exist?(gen_input_path)
       result = `ruby #{gen_input_path}`
       File.write(static_input_path, result)
     end
