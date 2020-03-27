@@ -1,3 +1,3 @@
-require_relative File.join('..', '..', 'init.rb')
+require_relative '../../lib/common.rb'
 
-puts SampleData.new('alice.txt').sample_sentences.select{|sentence| sentence.split(" ").length <= 10}
+puts SampleData.new('alice.txt').sentences.select{|sentence| sentence.split(" ").length <= 10}

@@ -1,31 +1,21 @@
 require 'open3'
 require 'pathname'
 
+require File.join(APP_PATH, './lib/answer.rb')
 class Problem < Struct.new(:name)
-  ORDER = [
-    'say_name_back', # interpolation
-    'human_yrs', # String#to_i, math
-    'say_last_name', # interpolation Array#[]
-    'rock_paper_scissors', # Bool== &&
-    'combine_colors', # Array#[] Bool= &&
-    'count_words', # String#split
-    'hi_birthday', # String#split, interpolation
-    'hi_birthday2', # String#split, interpolation, String#to_i
-    'count_vowels', # Array#each, Array#count, Bool==
-    'greet_thrice',
-    'greet_each_name', # Array#each
-    'square_num', # loops, accum
-    'reverse_string', # loops, Array#[], Array#push
-    'check_duplicates', # Bool==, Array#count, loop
-    'pig_latin', # boolean logic, string slicing
-    'is_palindrome',
-    'num_digits', # Number#to_s
-    'is_divisible', # modulo
-    'even_digits', # modulo, String#split
-    'is_prime', # modulo, functions
-  ]
+  # options: timeout, custom
+  require_relative './problem/order'
+
   PROBLEM_SPECS_PATH = File.join(APP_PATH, 'specs')
   PROBLEMS_PATH = File.join(APP_PATH, 'problems')
+
+  def initialize(_name)
+    name = _name.dup
+    name.sub!('problems/', '')
+    name.sub!(/\A\d+_/, '')
+    name.sub!(/\.rb\Z/, '')
+    super(name)
+  end
 
   def self.all
     Dir[File.join(PROBLEM_SPECS_PATH, '*')].map do |path|
@@ -33,6 +23,11 @@ class Problem < Struct.new(:name)
       self.new(name)
     end
   end
+
+  def forbid(methods)
+    @forbidden_methods = methods
+  end
+
   def no
     i = ORDER.index(name)
     return nil unless i
@@ -69,7 +64,7 @@ class Problem < Struct.new(:name)
 
   def input_content
     unless File.exist?(static_input_path) && File.read(static_input_path).strip != ''
-      raise "expected generator #{gen_input_path}" unless File.exist?(gen_input_path)
+      raise "expected generator #{gen_input_path.inspect}" unless File.exist?(gen_input_path)
       result = `ruby #{gen_input_path}`
       File.write(static_input_path, result)
     end
@@ -77,22 +72,58 @@ class Problem < Struct.new(:name)
   end
 
   def our_answer(line)
-    our_stdout, our_status = LIGHTLY.get(our_hash + line) { Open3.capture2("ruby #{specs_file_path}", stdin_data: line) }
-    if our_status != 0
-      raise "error, ask Ben :P"
-      return
-    end
-    our_stdout.strip
+    Answer.new(ruby_runner: specs_file_path, stdin_data: line)
+  end
+  def before_rb
+    prompt_lines
+    return nil unless @forbidden_methods
+    @forbidden_methods.map do |_method|
+      klass, method = _method.split('#')
+      # "#{klass}.undef_method(:#{method})"
+      "class #{klass}; def #{method}; raise '#{name} forbids #{_method}'; end; end"
+    end.join(';')
   end
   def their_answer(line)
-    their_stdout, their_status = LIGHTLY.get(their_hash + line) { Open3.capture2("ruby #{problem_path}", stdin_data: line) }
-    their_stdout.strip
+    Answer.new(ruby_runner: problem_path, stdin_data: line, before_rb: before_rb)
+  end
+  def spec
+    @spec ||= ProblemSpec.new(path: specs_file_path)
+  end
+  def prompt_lines
+    @prompt_lines ||= begin
+      content = File.read(specs_file_path)
+      lines = content.split("\n")
+      non_comment_lines = 0
+      at_begin = true
+      second_non_comment_line_no = lines.index do |line|
+        if line[0] != '#'
+          if at_begin
+            at_begin = false
+            next false
+          end
+          next true
+        end
+        false
+      end
+
+      prompt_lines = if second_non_comment_line_no
+        lines[0..second_non_comment_line_no - 1]
+      else
+        lines
+      end
+
+      evaled_lines = prompt_lines.select{|line| line.start_with?('#')}.select do |line|
+        rb = line.sub(/\A#/, '')
+        begin
+          eval(rb)
+          true
+        rescue Exception => ee
+          false
+        end
+      end
+      prompt_lines - evaled_lines
+    end
+
   end
 
-  def their_hash
-    @their_hash ||= Digest::MD5.file(problem_path).hexdigest
-  end
-  def our_hash
-    @our_hash ||= Digest::MD5.file(specs_file_path).hexdigest
-  end
 end

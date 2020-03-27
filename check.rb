@@ -11,41 +11,50 @@ unless problem_name
   puts "ruby #{File.basename(__FILE__)}.rb <problem_name>"
 end
 
-problem_name.sub!('problems/', '')
-problem_name.sub!(/\A\d+_/, '')
-problem_name.sub!(/\.rb\Z/, '')
+require_relative 'lib/common.rb'
 
-require_relative 'init.rb'
-require_relative 'lib/problem.rb'
 class ProblemChecker < Problem
 
+  def initialize(*a, **kw)
+    @no_passed = 0
+    super
+  end
+
   def check_solution
-    no_passed = 0
-    input_content.split("\n").each do |line|
-      # puts "checking #{line}"
-      # their_stdout, their_status = LIGHTLY.get(their_hash + line) { Open3.capture2("ruby #{file_path}", stdin_data: line) }
+    input_content.split("\n").each.with_index do |line, i|
+      puts "checking #{i}"
       actual = their_answer(line)
       expected = our_answer(line)
-      if actual != expected
+      if actual.stdout.strip != expected.stdout.strip
         # puts "echo #{line} | ruby problems/#{name}.rb"
-        puts "#{no_passed} tests passed!"
+        puts "#{@no_passed} tests passed!"
 
-        puts "ruby #{problem_rel_path}"
-        puts "input    : #{line}"#line.inspect
-        puts "expected : #{expected}"
-        puts "but got  : #{actual}"
+        # puts "ruby #{problem_rel_path}"
+        puts "input    : #{line}"
+        puts "expected : #{expected.stdout.strip.count("\n") > 0 ? "\n" : ''}#{expected.stdout}"
+        puts "but got  : #{actual.stdout.strip.count("\n") > 0 ? "\n" : ''}#{actual.stdout}"
         # puts "#{line} shouldn't be #{their_stdout}"
         return
       end
-      no_passed += 1
+      runtime_ratio = actual.runtime / expected.runtime
+      # puts runtime_ratio
+      if runtime_ratio > 1.5
+        puts "#{@no_passed} tests passed!"
+
+        puts "input    : #{line}"
+        pct_slower = ((runtime_ratio - 1.0) * 100).to_i
+        puts "too slow! (#{pct_slower}% slower)"
+        return
+      end
+      @no_passed += 1
       # next if their_answer == our_answer
       # puts "Wrong answer for #{line.inspect}"
     end
-    puts "#{no_passed} tests passed!"
+    puts "#{@no_passed} tests passed!"
     puts "everything looks good! 🌈☀️"
   end
 end
-puts "checking.."
+# puts "checking.."
 problem = ProblemChecker.new(problem_name)
 problem.check_solution
 problem
