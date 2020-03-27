@@ -6,13 +6,13 @@ class SampleData
   def contents
     @contents ||= File.read(File.join(APP_PATH, 'data', name))
   end
-  def sample_words(count=100)
+  def words(count=100)
     words = contents.split("\n").map(&:strip).map(&:downcase)
     words.select!{|word| word.match(/\A[a-z]+\Z/)}
 
     words.sample(count)
   end
-  def sample_sentences
+  def sentences
     _contents = contents.dup.downcase
     _contents.gsub!(/\.+/, '.')
     _contents.gsub!(/[^a-z\. ]/, ' ')
@@ -22,7 +22,7 @@ class SampleData
 
   class << self
     def words(name)
-      self.new(name).sample_words
+      self.new(name).words
     end
   end
 end

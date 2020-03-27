@@ -1,28 +1,10 @@
 require 'open3'
 require 'pathname'
 
+require File.join(APP_PATH, './lib/answer.rb')
 class Problem < Struct.new(:name)
-  ORDER = [
-    'say_name_back', # interpolation
-    'human_yrs', # String#to_i, math
-    'say_last_name', # interpolation Array#[]
-    'rock_paper_scissors', # Bool== &&
-    'combine_colors', # Array#[] Bool= &&
-    'count_words', # String#split
-    'hi_birthday', # String#split, interpolation
-    'hi_birthday2', # String#split, interpolation, String#to_i
-    'count_vowels', # Array#each, Array#count, Bool==
-    'greet_each_name', # Array#each
-    'square_num', # loops, accum
-    'reverse_string', # loops, Array#[], Array#push
-    'check_duplicates', # Bool==, Array#count, loop
-    'pig_latin', # boolean logic, string slicing
-    'is_palindrome',
-    'num_digits', # Number#to_s
-    'is_divisible', # modulo
-    'even_digits', # modulo, String#split
-    'is_prime', # modulo, functions
-  ]
+  # options: timeout, custom
+  require_relative './problem/order'
   PROBLEM_SPECS_PATH = File.join(APP_PATH, 'specs')
   PROBLEMS_PATH = File.join(APP_PATH, 'problems')
 
@@ -40,6 +22,7 @@ class Problem < Struct.new(:name)
       self.new(name)
     end
   end
+
   def no
     i = ORDER.index(name)
     return nil unless i
@@ -84,22 +67,32 @@ class Problem < Struct.new(:name)
   end
 
   def our_answer(line)
-    our_stdout, our_status = LIGHTLY.get(our_hash + line) { Open3.capture2("ruby #{specs_file_path}", stdin_data: line) }
-    if our_status != 0
-      raise "error, ask Ben :P"
-      return
-    end
-    our_stdout.strip
+    Answer.new(ruby_runner: specs_file_path, stdin_data: line)
   end
   def their_answer(line)
-    their_stdout, their_status = LIGHTLY.get(their_hash + line) { Open3.capture2("ruby #{problem_path}", stdin_data: line) }
-    their_stdout.strip
+    Answer.new(ruby_runner: problem_path, stdin_data: line)
+  end
+  def spec
+    @spec ||= ProblemSpec.new(path: specs_file_path)
+  end
+  def prompt_lines
+    content = File.read(specs_file_path)
+    lines = content.split("\n")
+    non_comment_lines = 0
+    at_begin = true
+    second_non_comment_line_no = lines.index do |line|
+      if line[0] != '#'
+        if at_begin
+          at_begin = false
+          next false
+        end
+        next true
+      end
+      false
+    end
+    p second_non_comment_line_no
+    return lines unless second_non_comment_line_no
+    lines[0..second_non_comment_line_no - 1]
   end
 
-  def their_hash
-    @their_hash ||= Digest::MD5.file(problem_path).hexdigest
-  end
-  def our_hash
-    @our_hash ||= Digest::MD5.file(specs_file_path).hexdigest
-  end
 end
