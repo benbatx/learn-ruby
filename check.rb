@@ -25,14 +25,14 @@ class ProblemChecker < Problem
       puts "checking #{i}"
       actual = their_answer(line)
       expected = our_answer(line)
-      if actual.stdout != expected.stdout
+      if actual.stdout.strip != expected.stdout.strip
         # puts "echo #{line} | ruby problems/#{name}.rb"
         puts "#{@no_passed} tests passed!"
 
         # puts "ruby #{problem_rel_path}"
         puts "input    : #{line}"
-        puts "expected : #{expected.stdout}"
-        puts "but got  : #{actual.stdout}"
+        puts "expected : #{expected.stdout.strip.count("\n") > 0 ? "\n" : ''}#{expected.stdout}"
+        puts "but got  : #{actual.stdout.strip.count("\n") > 0 ? "\n" : ''}#{actual.stdout}"
         # puts "#{line} shouldn't be #{their_stdout}"
         return
       end

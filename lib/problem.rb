@@ -23,6 +23,10 @@ class Problem < Struct.new(:name)
     end
   end
 
+  def forbid(methods)
+    @forbidden_methods = methods
+  end
+
   def no
     i = ORDER.index(name)
     return nil unless i
@@ -69,30 +73,56 @@ class Problem < Struct.new(:name)
   def our_answer(line)
     Answer.new(ruby_runner: specs_file_path, stdin_data: line)
   end
+  def before_rb
+    prompt_lines
+    return nil unless @forbidden_methods
+    @forbidden_methods.map do |_method|
+      klass, method = _method.split('#')
+      # "#{klass}.undef_method(:#{method})"
+      "class #{klass}; def #{method}; raise '#{name} forbids #{_method}'; end; end"
+    end.join(';')
+  end
   def their_answer(line)
-    Answer.new(ruby_runner: problem_path, stdin_data: line)
+    Answer.new(ruby_runner: problem_path, stdin_data: line, before_rb: before_rb)
   end
   def spec
     @spec ||= ProblemSpec.new(path: specs_file_path)
   end
   def prompt_lines
-    content = File.read(specs_file_path)
-    lines = content.split("\n")
-    non_comment_lines = 0
-    at_begin = true
-    second_non_comment_line_no = lines.index do |line|
-      if line[0] != '#'
-        if at_begin
-          at_begin = false
-          next false
+    @prompt_lines ||= begin
+      content = File.read(specs_file_path)
+      lines = content.split("\n")
+      non_comment_lines = 0
+      at_begin = true
+      second_non_comment_line_no = lines.index do |line|
+        if line[0] != '#'
+          if at_begin
+            at_begin = false
+            next false
+          end
+          next true
         end
-        next true
+        false
       end
-      false
+
+      prompt_lines = if second_non_comment_line_no
+        lines[0..second_non_comment_line_no - 1]
+      else
+        lines
+      end
+
+      evaled_lines = prompt_lines.select{|line| line.start_with?('#')}.select do |line|
+        rb = line.sub(/\A#/, '')
+        begin
+          eval(rb)
+          true
+        rescue Exception => ee
+          false
+        end
+      end
+      prompt_lines - evaled_lines
     end
-    p second_non_comment_line_no
-    return lines unless second_non_comment_line_no
-    lines[0..second_non_comment_line_no - 1]
+
   end
 
 end
