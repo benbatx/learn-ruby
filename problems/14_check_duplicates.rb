@@ -6,8 +6,10 @@ str = gets.strip
 # elday has magic hands -> true
 # boys will be boys -> false
 arr = str.split(' ')
-if arr.uniq.length == arr.length
-  puts "true"
-else
-  puts "false"
-end
+# if arr.uniq.length == arr.length
+#   puts "true"
+# else
+#   puts "false"
+# end
+has_duplicates = (arr.uniq.length == arr.length)
+puts has_duplicates #automatically converts boolean to a string
