@@ -79,7 +79,7 @@ class Problem < Struct.new(:name)
     @forbidden_methods.map do |_method|
       klass, method = _method.split('#')
       # "#{klass}.undef_method(:#{method})"
-      "class #{klass}; def #{method}; raise '#{name} forbids #{_method}'; end; end"
+      "class #{klass}; def #{method}(*a,**kw); raise '#{name} forbids #{_method}'; end; end"
     end.join(';')
   end
   def their_answer(line)
