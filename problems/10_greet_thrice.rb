@@ -12,7 +12,10 @@ name = gets().strip()
 
 # nutmeg -> hi nutmeg, bye nutmeg
 # hi nutmeg, bye nutmeg
-# hi nutmeg, bye nutmeg
-
-
-
+# hi nutmeg, bye nutmeg}
+x = 0
+loop do
+  x += 1
+  puts "hi #{name}, bye #{name}"
+  break if x >= 3
+end

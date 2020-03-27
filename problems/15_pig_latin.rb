@@ -6,5 +6,17 @@ word = gets.strip
 # child -> ildchay
 # awesome -> awesomeway
 # with -> ithway
-
-
+vowels = "aeiou".split('')
+vowels.each do |vowel|
+  if word[0].count(vowel) == 1
+    word << "way"
+    puts word
+  elsif word[1].count(vowel) == 1
+    word << word[0] << "ay"
+    word.delete_at(0)
+    puts word
+  else
+    word << word[0..1] << "ay"
+    word.delete_at(0..1)
+  end
+end
