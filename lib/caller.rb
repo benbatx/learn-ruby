@@ -3,4 +3,8 @@ unless [nil, ''].include?(rb)
   eval(rb)
 end
 target = ARGV[0]
-require target
+def gets
+  STDIN.gets
+end
+contents = File.read(target)
+instance_eval(contents, target)
