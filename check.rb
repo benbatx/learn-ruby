@@ -27,7 +27,7 @@ class ProblemChecker < Problem
       expected = our_answer(line)
       if actual.stdout.strip != expected.stdout.strip
         # puts "echo #{line} | ruby problems/#{name}.rb"
-        puts "#{@no_passed} tests passed!"
+        puts "#{@no_passed} tests passed!" if @no_passed >= 1
 
         # puts "ruby #{problem_rel_path}"
         puts "input    : #{line}"
