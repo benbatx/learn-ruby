@@ -2,9 +2,11 @@ require_relative 'lib/common.rb'
 require_relative 'lib/problem.rb'
 
 class ProblemCopier < Problem
+  # def initialize(*a,**kw)
+  #   super
+  #   puts "#{self.name} missing order" unless self.no
+  # end
   def problem_file_contents
-
-    no_examples = 4
     ret_lines = []
 
     _prompt_lines = prompt_lines
@@ -25,7 +27,7 @@ class ProblemCopier < Problem
     File.read(problem_path) == problem_file_contents
   end
   def copy
-    return if no < 15
+    return if no && no < 15
     if File.exist?(problem_path) && !identical?
       puts "#{problem_rel_path} already exists, overwrite? (y/n)"
       return unless STDIN.gets.strip == 'y'
@@ -53,10 +55,6 @@ if [nil, 'all'].include?( problem_name )
   # FileUtils.rm_rf(Problem::PROBLEMS_PATH)
   # FileUtils.mkdir_p(Problem::PROBLEMS_PATH)
   ProblemCopier.all.each do |problem|
-    unless problem.no
-      puts "#{problem.name} missing order"
-      next
-    end
     problem.send(cmd_name)
   end
 else

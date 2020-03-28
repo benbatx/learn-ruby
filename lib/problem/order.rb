@@ -20,6 +20,8 @@ class Problem
     'is_divisible', # modulo
     'even_digits', # modulo, String#split
     'is_prime', # modulo, functions
+    'demo_fibonacci',
+    'factorial',
     'sort_arr', # []
   ]
 end

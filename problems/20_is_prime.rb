@@ -5,5 +5,3 @@ number = gets.to_i
 # 4 -> false
 # 12 -> false
 # 13 -> true
-
-

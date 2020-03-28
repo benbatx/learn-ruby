@@ -13,6 +13,7 @@ class Problem < Struct.new(:name)
     name.sub!('problems/', '')
     name.sub!(/\A\d+_/, '')
     name.sub!(/\.rb\Z/, '')
+    self.no_examples = 4
     super(name)
   end
 
@@ -26,6 +27,11 @@ class Problem < Struct.new(:name)
   def forbid(methods)
     @forbidden_methods = methods
   end
+  attr_accessor :no_examples
+  # def no_examples=(no)
+  #   p no
+  #   @no_examples = no
+  # end
 
   def no
     i = ORDER.index(name)
@@ -48,7 +54,7 @@ class Problem < Struct.new(:name)
     File.join(specs_folder_path, 'inputs.rb')
   end
   def problem_path
-    File.join(PROBLEMS_PATH, "#{no}_#{name}.rb")
+    File.join(PROBLEMS_PATH, "#{no || '999'}_#{name}.rb")
   end
   def problem_rel_path
     Pathname.new(problem_path).relative_path_from(Pathname.new(APP_PATH))
@@ -110,15 +116,17 @@ class Problem < Struct.new(:name)
       else
         lines
       end
-
       evaled_lines = prompt_lines.select{|line| line.start_with?('#')}.select do |line|
         rb = line.sub(/\A#/, '')
-        begin
+        res = begin
           eval(rb)
           true
         rescue Exception => ee
+          # puts "problem-rb #{ee.full_message}"
           false
         end
+        # puts "#{rb} -> #{res.inspect}"
+        res
       end
       prompt_lines - evaled_lines
     end

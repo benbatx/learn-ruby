@@ -2,3 +2,4 @@
 .byebug_history
 cache
 specs/sort_arr/inputs.txt
+specs/factorial/inputs.txt
