@@ -2,7 +2,7 @@ require 'open3'
 require 'pathname'
 
 require File.join(APP_PATH, './lib/answer.rb')
-class Problem < Struct.new(:path, :name, keyword_init: true)
+class Problem < Struct.new(:path, :name, :no, keyword_init: true)
   # options: timeout, custom
   require_relative './problem/order'
   PROBLEM_SPECS_PATH = File.join(APP_PATH, 'specs')
@@ -44,6 +44,8 @@ class Problem < Struct.new(:path, :name, keyword_init: true)
 
     self.no_examples = 4
 
+    kw[:no] = ORDER.index(self.name)
+
     super(**kw)
 
     if !name && !path
@@ -64,7 +66,7 @@ class Problem < Struct.new(:path, :name, keyword_init: true)
   def forbid(methods)
     @forbidden_methods = methods
   end
-  attr_accessor :no_examples
+  attr_accessor :no_examples, :congrats_msg
   # def no_examples=(no)
   #   p no
   #   @no_examples = no
@@ -100,12 +102,14 @@ class Problem < Struct.new(:path, :name, keyword_init: true)
   end
 
   def input_content
+    prompt_lines
+    return @input_content if @input_content
     unless File.exist?(static_input_path) && File.read(static_input_path).strip != ''
       raise "expected generator #{gen_input_path.inspect}" unless File.exist?(gen_input_path)
       result = `ruby #{gen_input_path}`
       File.write(static_input_path, result)
     end
-    File.read(static_input_path)
+    @input_content = File.read(static_input_path)
   end
 
   def before_rb
@@ -127,50 +131,72 @@ class Problem < Struct.new(:path, :name, keyword_init: true)
     @prompt_lines ||= begin
       content = File.read(specs_file_path)
       lines = content.split("\n")
-      non_comment_lines = 0
-      at_begin = true
-      second_non_comment_line_no = lines.index do |line|
-        if line[0] != '#'
-          if at_begin
-            at_begin = false
-            next false
-          end
-          next true
-        end
-        false
+      prompt_lines_n = lines.index do |line|
+        next false if line[0] == '#'
+        next false if line.include?('gets')
+        next true
+        # if line[0] != '#'
+        #   unless line.include?('gets')
+        #     next false
+        #   end
+        #   next true
+        # end
+        # false
       end
 
-      prompt_lines = if second_non_comment_line_no
-        lines[0..second_non_comment_line_no - 1]
+      prompt_lines = if prompt_lines_n
+        lines[0..prompt_lines_n - 1]
       else
         lines
       end
-      evaled_lines = prompt_lines.select{|line| line.start_with?('#')}.select do |line|
-        rb = line.sub(/\A#/, '')
-        res = begin
-          eval(rb)
-          true
-        rescue Exception => ee
-          # puts "problem-rb #{ee.full_message}"
-          false
+      # last_evaled_line_no = nil
+      # prompt_lines.each.with_index do |line, i|
+      #   next false unless line.start_with?('#')
+      #   # next false if line.match(/\A\d+\Z/)
+      #   # next false if line.match(/\A\d+.+\Z/)
+      #   rb = line.sub(/\A#/, '')
+      #   res = begin
+      #     eval(rb)
+      #     previous_eval = last_evaled_line_no
+      #     last_evaled_line_no = i
+      #   rescue Exception => ee
+      #     break if previous_eval
+      #     # puts "problem-rb #{ee.full_message}"
+      #   end
+      #   # puts "#{rb} -> #{res.inspect}"
+      #   res
+      # end
+      settings_i = prompt_lines.index('# settings')
+      if settings_i
+        # settings_i += 1
+
+        settings_lines = prompt_lines[settings_i..-1]
+        prompt_lines -= settings_lines
+
+        settings_lines.each do |line|
+          rb = line.sub(/\A#/, '')
+          res = begin
+            eval(rb)
+          rescue Exception => ee
+          end
         end
-        # puts "#{rb} -> #{res.inspect}"
-        res
       end
-      prompt_lines - evaled_lines
+      prompt_lines
     end
 
   end
 
   def inputs
+    if block_given?
+      @input_content = yield
+    end
     input_content.split("\n")
   end
-
 
   def check_solution(ruby_runner: problem_path, silent_pass: false)
     @no_passed = 0
     inputs.each.with_index do |line, i|
-      puts "checking #{i}" unless silent_pass
+      puts "checking #{i + 1}" unless silent_pass
       actual = Answer.new(ruby_runner: ruby_runner, stdin_data: line, before_rb: before_rb)
       expected = our_answer(line)
       if actual.stdout.strip != expected.stdout.strip
@@ -199,6 +225,11 @@ class Problem < Struct.new(:path, :name, keyword_init: true)
     unless silent_pass
       puts "#{@no_passed} tests passed!"
       puts "everything looks good! 🌈☀️"
+      if congrats_msg
+        puts ""
+        puts congrats_msg
+        puts ""
+      end
     end
     return true
   end

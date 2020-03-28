@@ -19,6 +19,7 @@ class Problem
     'num_digits', # Number#to_s
     'is_divisible', # modulo
     'even_digits', # modulo, String#split
+    'fizz_buzz', # modulo, loops, elseif
     'is_prime', # modulo, functions
     'demo_fibonacci',
     'factorial',

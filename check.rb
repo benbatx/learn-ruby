@@ -21,7 +21,7 @@ class ProblemChecker < Problem
   # end
 
 end
-# puts "checking.."
+
 problem = ProblemChecker.new(name_or_path: problem_name)
 ret = problem.check_solution
 if ret
