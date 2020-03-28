@@ -16,6 +16,11 @@ names_str = gets.strip
 # hi mars, bye mars
 # hi sky, bye sky
 # hi stars, bye stars
-
-
-
+arr = names_str.split(' ')
+arr_length = arr.length
+x=0
+loop do
+  puts "hi #{arr[x]}, bye #{arr[x]}"
+  x += 1
+  break if x >= arr_length.to_i
+end

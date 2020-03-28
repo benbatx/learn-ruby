@@ -4,5 +4,5 @@ name_age = gets.strip
 # Ben 26 -> Hi Ben! 74 years until your 100th birthday
 # Annabelle 10 -> Hi Annabelle! 90 years until your 100th birthday
 # Grandma 80  -> Hi Grandma! 20 years until your 100th birthday
-
-
+arr = name_age.split
+puts "Hi #{arr[0]}! #{100-arr[1].to_i} years until your 100th birthday"

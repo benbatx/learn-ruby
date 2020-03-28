@@ -5,5 +5,4 @@ sentence = gets.strip
 # chapter iv -> 2
 # are you to get in at all said the footman -> 10
 # but at any rate he might answer questions -> 8
-
-
+puts sentence.split(' ').length

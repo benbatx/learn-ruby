@@ -5,5 +5,4 @@ num_str = gets.strip
 # 7 -> 49
 # 10 -> 100
 # 9 -> 81
-
-
+puts num_str.to_i ** 2

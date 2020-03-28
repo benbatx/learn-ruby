@@ -6,5 +6,4 @@ dog_age_string = gets.strip
 # 10 -> 70
 # 18 -> 126
 # 16 -> 112
-
-
+puts dog_age_string.to_i*7

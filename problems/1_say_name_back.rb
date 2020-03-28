@@ -6,4 +6,4 @@ name = gets.strip
 # Beyonce -> Hi! Your name is Beyonce. There are 7 letters in your name
 # Jake -> Hi! Your name is Jake. There are 4 letters in your name
 
-
+puts "Hi! Your name is #{name}. There are #{name.length} letters in your name"

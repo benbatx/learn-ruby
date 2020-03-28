@@ -5,5 +5,4 @@ word = gets.strip
 # whiskers -> sreksihw
 # head -> daeh
 # remedies -> seidemer
-
-
+puts word.reverse
