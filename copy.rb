@@ -1,5 +1,4 @@
 require_relative 'lib/common.rb'
-require_relative 'lib/problem.rb'
 
 class ProblemCopier < Problem
   # def initialize(*a,**kw)
@@ -58,6 +57,6 @@ if [nil, 'all'].include?( problem_name )
     problem.send(cmd_name)
   end
 else
-  ProblemCopier.new(problem_name).send(cmd_name)
+  ProblemCopier.from_name_or_path(problem_name).send(cmd_name)
   `open #{ProblemCopier.new(problem_name).problem_path}`
 end

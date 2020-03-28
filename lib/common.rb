@@ -1,4 +1,7 @@
-APP_PATH = File.join(File.dirname(__FILE__), '..')
+require 'bundler'
+Bundler.require(:default)
+
+APP_PATH = File.expand_path(File.join(File.dirname(__FILE__), '..'))
 RANDOM = Random.new(123)
 require 'lightly'
 LIGHTLY = Lightly.new
