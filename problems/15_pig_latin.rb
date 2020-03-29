@@ -6,7 +6,7 @@ word = gets.strip
 # child -> ildchay
 # awesome -> awesomeway
 # with -> ithway
-vowels = "aeiou".split('')
+#vowels = "aeiou".split('')
 #vowels.each do |vowel|
   # if word[0] ==
   #   word << "way"
@@ -19,11 +19,14 @@ vowels = "aeiou".split('')
   #   word << word[0..1] << "ay"
   #   word.delete_at(0..1)
   # end
-#end
+def is_vowel?(letter)
+  vowels = "aeiou".split('')
+  vowels.include?(letter)
+end
 #puts vowels.count(word[0]) == 1
-if vowels.include?(word[0]) #first letter is a vowel
+if is_vowel?(word[0]) #first letter is a vowel
   puts word+"way"
-elsif vowels.include?(word[1])
+elsif is_vowel?(word[1])
   word = word[1..-1]+word[0]+"ay"
   #word[0] = ""
   puts word

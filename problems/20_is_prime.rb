@@ -5,5 +5,8 @@ number = gets.to_i
 # 4 -> false
 # 12 -> false
 # 13 -> true
+arr = (1..number).select {|n| number % n ==0}
+puts arr.size == 2
 
 
+#def is_prime
