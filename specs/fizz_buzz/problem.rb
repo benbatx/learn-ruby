@@ -13,7 +13,7 @@
 # settings
 # self.no_examples = 0
 # self.inputs { "yo\n" * 10 }
-# self.congrats_msg = "Fun fact: this was the interview question for my first full time job"
+# self.congrats_msg = "Fun fact: this was the interview question for my first full time job!"
 (1..100).each do |i|
   if i % 3 == 0 && i % 5 == 0
     puts 'FizzBuzz'
