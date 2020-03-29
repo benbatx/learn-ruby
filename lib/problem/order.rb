@@ -21,8 +21,10 @@ class Problem
     'even_digits', # modulo, String#split
     'fizz_buzz', # modulo, loops, elseif
     'is_prime', # modulo, functions
+    # 'mean',
     'demo_fibonacci',
     'factorial',
     'sort_arr', # []
+    'sort_word_len',
   ]
 end

@@ -26,9 +26,10 @@ class ProblemCopier < Problem
     File.read(problem_path) == problem_file_contents
   end
   def copy
-    min_no = 10
+    min_no = 15
     if no && no < min_no
       puts "skipping copy with no = #{no} (skip under #{min_no})"
+      return
     end
     if File.exist?(problem_path) && !identical?
       puts "#{problem_rel_path} already exists, overwrite? (y/n)"
@@ -57,6 +58,7 @@ if [nil, 'all'].include?( problem_name )
   # FileUtils.rm_rf(Problem::PROBLEMS_PATH)
   # FileUtils.mkdir_p(Problem::PROBLEMS_PATH)
   ProblemCopier.all.each do |problem|
+    next unless File.exist?(problem.specs_file_path)
     problem.send(cmd_name)
   end
 else
