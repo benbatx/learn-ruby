@@ -5,5 +5,10 @@ word = gets.strip
 # elday -> false
 # ben -> false
 # racecar -> true
-
-
+def reverse(word)
+  arr = word.split('')
+  backword = []
+  word.length.times {backword << arr.pop}
+  backword.join
+end
+puts word == reverse(word)

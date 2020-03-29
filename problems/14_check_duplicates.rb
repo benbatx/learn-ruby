@@ -1,4 +1,4 @@
-str = gets.strip
+str = STDIN.gets().strip()
 # output true if str has any word more than once
 
 # i ate some pancakes -> true

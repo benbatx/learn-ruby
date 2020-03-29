@@ -5,5 +5,4 @@ num = gets.to_i
 # 123 -> 3
 # 4847000 -> 7
 # 48484 -> 5
-
-
+puts num.to_s.length
