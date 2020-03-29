@@ -8,6 +8,5 @@ LIGHTLY = Lightly.new
 
 require File.join(APP_PATH, './lib/sample_data.rb')
 require File.join(APP_PATH, './lib/problem.rb')
-# require File.join(APP_PATH, './lib/input_set.rb')
-# require_relative './problem.rb'
+
 # puts SampleData.new('peter_pan.txt').words

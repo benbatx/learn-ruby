@@ -104,12 +104,19 @@ class Problem < Struct.new(:path, :name, :no, keyword_init: true)
   def input_content
     prompt_lines
     return @input_content if @input_content
-    unless File.exist?(static_input_path) && File.read(static_input_path).strip != ''
-      raise "expected generator #{gen_input_path.inspect}" unless File.exist?(gen_input_path)
-      result = `ruby #{gen_input_path}`
-      File.write(static_input_path, result)
+    @input_content = if File.exist?(gen_input_path)
+      hash = Digest::MD5.file(gen_input_path).hexdigest
+      LIGHTLY.get(hash) do
+        result = `ruby #{gen_input_path}`
+        File.write(static_input_path, result)
+        result
+      end
+    elsif File.exist?(static_input_path)
+      File.read(static_input_path)
+    else
+      debugger
     end
-    @input_content = File.read(static_input_path)
+    @input_content
   end
 
   def before_rb
@@ -217,7 +224,7 @@ class Problem < Struct.new(:path, :name, :no, keyword_init: true)
 
         puts "input    : #{line}"
         pct_slower = ((runtime_ratio - 1.0) * 100).to_i
-        puts "too slow! (#{pct_slower}% slower)"
+        puts "too slow! make your solution more efficient"
         return false
       end
       @no_passed += 1
