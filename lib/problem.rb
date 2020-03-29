@@ -19,6 +19,12 @@ class Problem < Struct.new(:path, :name, :no, keyword_init: true)
     File.join(PROBLEMS_PATH, "#{no && (no + 1) || '999'}_#{name}.rb")
   end
 
+  def self.unregistered_problem_paths
+    ret = Dir[File.join(PROBLEMS_PATH, '*.rb')]
+    ret -= self.all.map(&:problem_path)
+    ret
+  end
+
   def self.from_name(name)
     self.new(self.name_to_path(name))
   end
@@ -57,11 +63,12 @@ class Problem < Struct.new(:path, :name, :no, keyword_init: true)
   end
 
   def self.all
-    Dir[File.join(PROBLEM_SPECS_PATH, '*')].map do |path|
+    @all ||= Dir[File.join(PROBLEM_SPECS_PATH, '*')].map do |path|
       name = path.split('/')[-1]
       self.new(name: name)
     end
   end
+
 
   def forbid(methods)
     @forbidden_methods = methods

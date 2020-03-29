@@ -55,6 +55,12 @@ cmd_name = 'copy'
 problem_name = args[0]
 
 if [nil, 'all'].include?( problem_name )
+
+  Problem.unregistered_problem_paths.each do |unreg|
+    puts "removing unregistered path #{unreg}"
+    FileUtils.rm(unreg)
+  end
+
   # FileUtils.rm_rf(Problem::PROBLEMS_PATH)
   # FileUtils.mkdir_p(Problem::PROBLEMS_PATH)
   ProblemCopier.all.each do |problem|

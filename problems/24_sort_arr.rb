@@ -3,3 +3,5 @@ words = STDIN.gets().strip().split(" ")
 # ex:
 # jean shorts look quite nice on elday -> elday jean look nice on quite shorts
 # she is a damn cute girl -> a cute damn girl is she
+
+
