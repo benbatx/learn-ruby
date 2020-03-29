@@ -15,11 +15,16 @@ class Problem
     'reverse_string', # loops, Array#[], Array#push
     'check_duplicates', # Bool==, Array#count, loop
     'pig_latin', # boolean logic, string slicing
-    'is_palindrome',
+    'is_palindrome', # String#reverse
     'num_digits', # Number#to_s
     'is_divisible', # modulo
     'even_digits', # modulo, String#split
+    'fizz_buzz', # modulo, loops, elseif
     'is_prime', # modulo, functions
+    # 'mean',
+    'demo_fibonacci',
+    'factorial',
     'sort_arr', # []
+    'sort_word_len',
   ]
 end

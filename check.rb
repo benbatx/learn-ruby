@@ -15,46 +15,17 @@ require_relative 'lib/common.rb'
 
 class ProblemChecker < Problem
 
-  def initialize(*a, **kw)
-    @no_passed = 0
-    super
-  end
+  # def initialize(*a, **kw)
+  #   @no_passed = 0
+  #   super
+  # end
 
-  def check_solution
-    input_content.split("\n").each.with_index do |line, i|
-      puts "checking #{i}"
-      actual = their_answer(line)
-      expected = our_answer(line)
-      if actual.stdout.strip != expected.stdout.strip
-        # puts "echo #{line} | ruby problems/#{name}.rb"
-        puts "#{@no_passed} tests passed!"
-
-        # puts "ruby #{problem_rel_path}"
-        puts "input    : #{line}"
-        puts "expected : #{expected.stdout.strip.count("\n") > 0 ? "\n" : ''}#{expected.stdout}"
-        puts "but got  : #{actual.stdout.strip.count("\n") > 0 ? "\n" : ''}#{actual.stdout}"
-        # puts "#{line} shouldn't be #{their_stdout}"
-        return
-      end
-      runtime_ratio = actual.runtime / expected.runtime
-      # puts runtime_ratio
-      if runtime_ratio > 1.5
-        puts "#{@no_passed} tests passed!"
-
-        puts "input    : #{line}"
-        pct_slower = ((runtime_ratio - 1.0) * 100).to_i
-        puts "too slow! (#{pct_slower}% slower)"
-        return
-      end
-      @no_passed += 1
-      # next if their_answer == our_answer
-      # puts "Wrong answer for #{line.inspect}"
-    end
-    puts "#{@no_passed} tests passed!"
-    puts "everything looks good! 🌈☀️"
-  end
 end
-# puts "checking.."
-problem = ProblemChecker.new(problem_name)
-problem.check_solution
-problem
+
+problem = ProblemChecker.new(name_or_path: problem_name)
+ret = problem.check_solution
+if ret
+  exit(0)
+else
+  exit(1)
+end
